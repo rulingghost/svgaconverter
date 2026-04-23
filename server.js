@@ -4,7 +4,8 @@ const path = require("path");
 const express = require("express");
 const multer = require("multer");
 
-const { createSvgaFromPngDir } = require("./lib/svga-pack");
+const { snapSvgaFps } = require("./lib/svga-common");
+const { createSvga2FromPngDir } = require("./lib/svga2-pack");
 const { getVideoMeta, exportPngSequence } = require("./lib/video-frames");
 const { isProbablyLottieJson, renderLottieToPngDir } = require("./lib/lottie-render");
 
@@ -68,13 +69,19 @@ app.post("/api/convert", upload.single("file"), async (req, res) => {
       meta = {
         width: lottieMeta.width,
         height: lottieMeta.height,
-        fps: lottieMeta.fps,
+        fps: snapSvgaFps(lottieMeta.fps),
+        durationSec: null,
       };
     } else if (VIDEO_EXT.has(ext) || GIF_EXT.has(ext)) {
       inputPath = path.join(workRoot, `girdi${ext}`);
       fs.writeFileSync(inputPath, req.file.buffer);
       const v = await getVideoMeta(inputPath);
-      meta = { width: v.width, height: v.height, fps: v.fps };
+      meta = {
+        width: v.width,
+        height: v.height,
+        fps: v.fps,
+        durationSec: v.durationSec,
+      };
       await exportPngSequence({
         inputPath,
         outputDir: frameDir,
@@ -90,13 +97,14 @@ app.post("/api/convert", upload.single("file"), async (req, res) => {
 
     const outName = `${baseNoExt}.svga`;
     const outPath = path.join(workRoot, outName);
-    await createSvgaFromPngDir({
+    await createSvga2FromPngDir({
       inputDir: frameDir,
       outputFile: outPath,
       fps: meta.fps,
       width: meta.width,
       height: meta.height,
       dedupe: true,
+      sourceDurationSec: meta.durationSec,
     });
 
     const svgaBuffer = fs.readFileSync(outPath);
