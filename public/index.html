@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SVGA Dönüştürücü</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <h1>SVGA Dönüştürücü</h1>
+        <p class="lead">
+          Video (MP4, WebM, MOV…), GIF veya <strong>Lottie JSON</strong> dosyanızı yükleyin; sunucu kareleri çıkarıp
+          <strong>.svga</strong> (SVGA 1.x) arşivi oluşturur.
+        </p>
+      </header>
+
+      <main class="card">
+        <label class="drop" id="dropZone">
+          <input type="file" id="fileInput" accept=".mp4,.webm,.mov,.mkv,.avi,.m4v,.gif,.json,video/*,image/gif,application/json" hidden />
+          <div class="drop-inner">
+            <span class="drop-title">Dosyayı sürükleyip bırakın</span>
+            <span class="drop-sub">veya seçmek için tıklayın</span>
+          </div>
+        </label>
+
+        <div class="row">
+          <span id="fileName" class="muted">Henüz dosya yok</span>
+          <button type="button" class="btn primary" id="convertBtn" disabled>SVGA indir</button>
+        </div>
+
+        <p id="status" class="status muted" role="status"></p>
+        <p id="error" class="error" role="alert" hidden></p>
+      </main>
+
+      <footer class="foot muted">
+        <small>Yerel çalışır; dosyalar yalnızca dönüştürme için geçici olarak işlenir. Büyük videolarda işlem biraz sürebilir.</small>
+      </footer>
+    </div>
+    <script src="/app.js"></script>
+  </body>
+</html>
